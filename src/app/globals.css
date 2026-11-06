@@ -5,10 +5,13 @@
 
 .ticker-wrap {
   overflow: hidden;
+  width: 100%;
 }
 
 .ticker-track {
-  animation: tickerMove 35s linear infinite;
+  width: max-content;
+  animation: tickerMove 20s linear infinite;
+  will-change: transform;
 }
 
 .ticker-wrap:hover .ticker-track {
@@ -29,4 +32,10 @@
   .ticker-track {
     animation: none;
   }
+}
+
+
+
+body {
+  background-color:rgb(238, 246, 239)
 }

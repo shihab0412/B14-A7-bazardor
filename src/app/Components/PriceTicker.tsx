@@ -2,90 +2,73 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getProducts } from "../lib/api";
+import type { Product } from "../Components/ProductCard";
 
-type Product = {
-  id: string | number;
-  name: string;
-  price: number;
-  change: number;
-  emoji?: string;
-};
-
-const demoProducts: Product[] = [
-  { id: 1, name: "স্বর্ণমতি চাল", price: 58, change: 2.5, emoji: "🍚" },
-  { id: 2, name: "মিনিকেট চাল", price: 99, change: -1.2, emoji: "🍚" },
-  { id: 3, name: "বাটাম সয়াবিন তেল", price: 66, change: 0.8, emoji: "🛢️" },
-  { id: 4, name: "মসুর ডাল", price: 120, change: 2.9, emoji: "🫘" },
-  { id: 5, name: "ছোলা", price: 82, change: -2.4, emoji: "🫘" },
-  { id: 6, name: "আলু", price: 35, change: -3.5, emoji: "🥔" },
-  { id: 7, name: "পেঁয়াজ", price: 60, change: 1.5, emoji: "🧅" },
-  { id: 8, name: "বেগুন", price: 44, change: 0.5, emoji: "🍆" },
-];
-
-export default function PriceTicker({
-  products = demoProducts,
-}: {
-  products?: Product[];
-}) {
-  const [items, setItems] = useState<Product[]>(products);
+export default function PriceTicker() {
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    setItems(products.length ? products : demoProducts);
-  }, [products]);
+    async function loadTickerProducts() {
+      try {
+        const data = await getProducts();
+        setProducts(data);
+      } catch (error) {
+        console.error("Ticker API error:", error);
+      }
+    }
 
-  const bn = (value: number) =>
-    new Intl.NumberFormat("bn-BD", {
-      maximumFractionDigits: 1,
-    }).format(value);
+    loadTickerProducts();
+  }, []);
 
-  if (!items.length) return null;
+  if (products.length === 0) {
+    return null;
+  }
 
-  const tickerItems = [...items, ...items];
+  const tickerItems = [...products, ...products];
 
   return (
-    <div className="w-full overflow-hidden border-b border-base-300 bg-base-100">
-      <div className="flex w-full items-center">
-
-        <div className="flex shrink-0 items-center gap-2 bg-green-700 px-3 py-3 text-xs font-bold text-white sm:px-5">
-          📈 আজকের বাজারদর
+    <div className="w-full overflow-hidden border-y border-green-100 bg-white py-3">
+      <div className="flex items-center">
+        <div className="shrink-0 bg-green-700 px-4 py-2 text-sm font-bold text-white">
+          আজকের বাজারদর
         </div>
 
-        <div className="ticker-wrap min-w-0 flex-1 overflow-hidden py-3">
-          <div className="ticker-track flex w-max items-center">
-
+        <div className="ticker-wrap flex-1">
+          <div className="ticker-track flex w-max items-center gap-8">
             {tickerItems.map((product, index) => (
               <div
                 key={`${product.id}-${index}`}
-                className="flex shrink-0 items-center gap-2 border-r border-base-300 px-4 text-xs sm:px-6"
+                className="flex shrink-0 items-center gap-2 text-sm"
               >
-                {/* Product Emoji */}
-                <span className="text-base">
-                  {product.emoji || "🛒"}
-                </span>
+                <span className="text-lg">{product.emoji}</span>
 
-                <span className="font-semibold text-base-content">
+                <span className="font-semibold text-gray-900">
                   {product.name}
                 </span>
 
-                <span className="font-bold">
-                  ৳{bn(product.price)}
+                <span className="font-bold text-gray-900">
+                  {product.price.toLocaleString("bn-BD")} টাকা
                 </span>
 
                 <span
-                  className={`badge badge-xs font-bold ${
+                  className={`font-bold ${
                     product.change > 0
-                      ? "badge-error"
+                      ? "text-red-600"
                       : product.change < 0
-                      ? "badge-success"
-                      : "badge-ghost"
+                        ? "text-green-700"
+                        : "text-gray-600"
                   }`}
                 >
-                  {product.change > 0 ? "▲" : product.change < 0 ? "▼" : "—"}
-                  {bn(Math.abs(product.change))}%
+                  {product.change > 0
+                    ? "▲"
+                    : product.change < 0
+                      ? "▼"
+                      : "—"}{" "}
+                  {Math.abs(product.change).toLocaleString("bn-BD")}%
                 </span>
               </div>
             ))}
-
           </div>
         </div>
       </div>
