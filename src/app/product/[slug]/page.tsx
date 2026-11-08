@@ -1,3 +1,4 @@
+export const instant = false;
 import ProductClient from "./ProductClient";
 
 export default async function Page({

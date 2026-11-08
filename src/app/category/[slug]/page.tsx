@@ -1,3 +1,4 @@
+export const instant = false;
 import CategoryClient from "../[slug]/CategoryClient";
 
 export default async function CategoryPage({
