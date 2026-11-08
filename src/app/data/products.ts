@@ -1,5 +1,5 @@
 
-import type { Product } from "./componets/productCard";
+import type { Product } from "../Components/ProductCard";
 
 export const products: Product[] = [
   {
