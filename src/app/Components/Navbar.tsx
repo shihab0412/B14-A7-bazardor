@@ -19,6 +19,7 @@ const categories = [
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [date, setDate] = useState("");
+
   const pathname = usePathname();
   const router = useRouter();
 
@@ -36,7 +37,13 @@ export default function Navbar() {
   }, []);
 
   const handleSignOut = async () => {
-    await authClient.signOut();
+    const { error } = await authClient.signOut();
+
+    if (error) {
+      alert("Sign Out করা যায়নি। আবার চেষ্টা করুন।");
+      return;
+    }
+
     setMenuOpen(false);
     router.push("/signin");
     router.refresh();
@@ -44,6 +51,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-base-200 bg-base-100">
+
       {/* Main Navbar */}
       <div className="navbar mx-auto max-w-6xl px-4">
 
@@ -58,6 +66,7 @@ export default function Navbar() {
               <h1 className="text-xl font-extrabold leading-tight">
                 বাজার দর
               </h1>
+
               <p className="text-[10px] text-gray-950">
                 {date}
               </p>
@@ -67,17 +76,30 @@ export default function Navbar() {
 
         {/* Desktop Auth */}
         <div className="navbar-end hidden gap-3 sm:flex">
+
           {!isPending && (
             session ? (
-              <button
-                onClick={handleSignOut}
-                className="btn bg-red-600 btn-sm text-white"
-              >
-                সাইন আউট
-              </button>
+              <>
+                <Link
+                  href="/profile"
+                  className="btn btn-ghost btn-sm"
+                >
+                  আমার প্রোফাইল
+                </Link>
+
+                <button
+                  onClick={handleSignOut}
+                  className="btn bg-red-600 btn-sm text-white"
+                >
+                  সাইন আউট
+                </button>
+              </>
             ) : (
               <>
-                <Link href="/signin" className="btn btn-ghost btn-sm">
+                <Link
+                  href="/signin"
+                  className="btn btn-ghost btn-sm"
+                >
                   সাইন ইন
                 </Link>
 
@@ -90,6 +112,7 @@ export default function Navbar() {
               </>
             )
           )}
+
         </div>
 
         {/* Mobile Hamburger */}
@@ -107,12 +130,14 @@ export default function Navbar() {
             )}
           </button>
         </div>
+
       </div>
 
       {/* Desktop Category Menu */}
       <nav className="hidden border-t border-base-200 sm:block">
         <div className="mx-auto max-w-6xl px-4">
           <ul className="menu menu-horizontal flex flex-wrap items-center gap-1 px-0 py-1">
+
             {categories.map((category) => (
               <li key={category.slug}>
                 <Link
@@ -128,6 +153,7 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+
           </ul>
         </div>
       </nav>
@@ -135,7 +161,9 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {menuOpen && (
         <div className="border-t border-base-200 bg-base-100 p-4 sm:hidden">
+
           <ul className="menu grid grid-cols-2 gap-2 rounded-box bg-base-200 p-2">
+
             {categories.map((category) => (
               <li key={category.slug}>
                 <Link
@@ -151,17 +179,30 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+
           </ul>
 
+          {/* Mobile Auth */}
           <div className="mt-3 flex gap-2">
+
             {!isPending && (
               session ? (
-                <button
-                  onClick={handleSignOut}
-                  className="btn bg-red-600 btn-sm flex-1 text-white"
-                >
-                  সাইন আউট
-                </button>
+                <>
+                  <Link
+                    href="/profile"
+                    onClick={() => setMenuOpen(false)}
+                    className="btn btn-outline btn-sm flex-1"
+                  >
+                    আমার প্রোফাইল
+                  </Link>
+
+                  <button
+                    onClick={handleSignOut}
+                    className="btn bg-red-600 btn-sm flex-1 text-white"
+                  >
+                    সাইন আউট
+                  </button>
+                </>
               ) : (
                 <>
                   <Link
@@ -182,9 +223,12 @@ export default function Navbar() {
                 </>
               )
             )}
+
           </div>
+
         </div>
       )}
+
     </header>
   );
 }
