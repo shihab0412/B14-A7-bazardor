@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./Components/Navbar";
 import PriceTicker from "./Components/PriceTicker";
 import Footer from "./Components/Footer";
+import { Suspense } from "react";
 
 const notoSerifBengali = Noto_Serif_Bengali({
   subsets: ["latin", "bengali"],
@@ -24,7 +25,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${notoSerifBengali.className} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
+      <Suspense fallback={null}>
+  <Navbar />
+</Suspense>
         <PriceTicker />
         {children}
         <Footer />
