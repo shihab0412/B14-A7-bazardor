@@ -112,7 +112,7 @@ export default function Footer() {
           <div className="flex flex-col items-center justify-between gap-3 text-center text-sm text-base-content/60 sm:flex-row sm:text-left">
 
             <p>
-              © {new Date().getFullYear()} বাজার দর। সর্বস্বত্ব সংরক্ষিত।
+           © 2026 বাজার দর। সর্বস্বত্ব সংরক্ষিত।
             </p>
 
       
