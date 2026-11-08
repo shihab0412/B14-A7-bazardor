@@ -16,10 +16,9 @@ export default function Footer() {
     <footer className="border-t border-base-300 bg-base-100">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
 
-        {/* Footer Main */}
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
 
-          {/* Brand */}
+  
           <div>
             <Link href="/" className="mb-3 inline-flex items-center gap-2">
               <div className="grid size-10 place-items-center rounded-xl bg-green-700 text-xl text-white">
@@ -38,7 +37,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h3 className="mb-4 text-lg font-bold">গুরুত্বপূর্ণ লিংক</h3>
 
@@ -69,25 +67,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Categories */}
-          <div>
-            <h3 className="mb-4 text-lg font-bold">পণ্যের ক্যাটাগরি</h3>
-
-            <ul className="grid grid-cols-2 gap-3 text-sm text-base-content/70">
-              {categories.map((category) => (
-                <li key={category.slug}>
-                  <Link
-                    href={`/category/${category.slug}`}
-                    className="transition hover:text-green-700"
-                  >
-                    {category.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact */}
+   
           <div>
             <h3 className="mb-4 text-lg font-bold">আমাদের সম্পর্কে</h3>
 
@@ -107,7 +87,7 @@ export default function Footer() {
 
         </div>
 
-        {/* Bottom Footer */}
+       
         <div className="mt-10 border-t border-base-300 pt-6">
           <div className="flex flex-col items-center justify-between gap-3 text-center text-sm text-base-content/60 sm:flex-row sm:text-left">
 
