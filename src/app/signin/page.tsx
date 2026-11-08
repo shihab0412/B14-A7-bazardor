@@ -1,21 +1,23 @@
 
 "use client";
 
-import { useState, type FormEvent } from "react";
-import Link from "next/link";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { authClient } from "../lib/auth-client";
 
-export default function SigninPage() {
+export default function SignInPage() {
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
-  const handleSignin = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     setError("");
     setLoading(true);
 
@@ -26,57 +28,73 @@ export default function SigninPage() {
       });
 
       if (error) {
-        setError(error.message || "Login করা যায়নি।");
+        setError(error.message || "Email অথবা Password ভুল হয়েছে।");
         return;
       }
 
       router.push("/");
       router.refresh();
     } catch {
-      setError("কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করো।");
+      setError("Login করতে সমস্যা হয়েছে। আবার চেষ্টা করো।");
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
-        <div className="mb-7 text-center">
-          <h1 className="text-3xl font-bold text-gray-800">
-            Welcome Back
-          </h1>
-          <p className="mt-2 text-gray-500">
-            Sign in to your BazarDor account.
-          </p>
-        </div>
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setGoogleLoading(true);
 
-        <form onSubmit={handleSignin} className="space-y-5">
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+    } catch {
+      setError("Google Login করা যাচ্ছে না। আবার চেষ্টা করো।");
+      setGoogleLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10">
+      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
+        <h1 className="mb-2 text-center text-3xl font-bold text-gray-800">
+          Welcome Back!
+        </h1>
+
+        <p className="mb-8 text-center text-gray-500">
+          Sign in to your BazarDor account
+        </p>
+
+        <form onSubmit={handleSignIn} className="space-y-5">
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">
+            <label className="mb-2 block font-medium text-gray-700">
               Email Address
             </label>
+
             <input
               type="email"
-              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
               required
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600"
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-pink-500"
             />
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">
+            <label className="mb-2 block font-medium text-gray-700">
               Password
             </label>
+
             <input
               type="password"
-              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
               required
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600"
+              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-pink-500"
             />
           </div>
 
@@ -89,17 +107,32 @@ export default function SigninPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-green-600 py-3 font-semibold text-white transition hover:bg-green-700 disabled:opacity-60"
+            className="w-full rounded-lg bg-pink-500 py-3 font-semibold text-white transition hover:bg-pink-600 disabled:opacity-60"
           >
             {loading ? "Signing In..." : "Sign In"}
           </button>
         </form>
 
+        <div className="my-6 flex items-center gap-3">
+          <div className="h-px flex-1 bg-gray-200" />
+          <span className="text-sm text-gray-400">OR</span>
+          <div className="h-px flex-1 bg-gray-200" />
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogleSignIn}
+          disabled={googleLoading}
+          className="w-full rounded-lg border border-gray-300 py-3 font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-60"
+        >
+          {googleLoading ? "Connecting..." : "Continue with Google"}
+        </button>
+
         <p className="mt-6 text-center text-sm text-gray-600">
           Don't have an account?{" "}
           <Link
             href="/signup"
-            className="font-semibold text-green-600 hover:underline"
+            className="font-semibold text-pink-500 hover:underline"
           >
             Sign Up
           </Link>
