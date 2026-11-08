@@ -49,6 +49,42 @@ export default function Navbar() {
     router.refresh();
   };
 
+  // Profile Avatar
+  const ProfileAvatar = ({ size = "size-9" }: { size?: string }) => (
+    <div
+      className={`${size} shrink-0 overflow-hidden rounded-full border-2 border-green-600 bg-green-100`}
+    >
+      {session?.user?.image ? (
+        <img
+          src={session.user.image}
+          alt="Profile"
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center font-bold text-green-700">
+          {session?.user?.name?.charAt(0).toUpperCase() || "U"}
+        </div>
+      )}
+    </div>
+  );
+
+  // Profile Link
+  const ProfileLink = ({ mobile = false }: { mobile?: boolean }) => (
+    <Link
+      href="/profile"
+      onClick={() => mobile && setMenuOpen(false)}
+      className={`flex items-center gap-2 rounded-lg transition hover:bg-base-200 ${
+        mobile ? "flex-1 border border-base-300 p-2" : "px-2 py-1"
+      }`}
+    >
+      <ProfileAvatar size={mobile ? "size-10" : "size-9"} />
+
+      <span className="max-w-32 truncate text-sm font-semibold">
+        {session?.user?.name || "আমার প্রোফাইল"}
+      </span>
+    </Link>
+  );
+
   return (
     <header className="sticky top-0 z-50 border-b border-base-200 bg-base-100">
 
@@ -80,12 +116,7 @@ export default function Navbar() {
           {!isPending && (
             session ? (
               <>
-                <Link
-                  href="/profile"
-                  className="btn btn-ghost btn-sm"
-                >
-                  আমার প্রোফাইল
-                </Link>
+                <ProfileLink />
 
                 <button
                   onClick={handleSignOut}
@@ -188,13 +219,7 @@ export default function Navbar() {
             {!isPending && (
               session ? (
                 <>
-                  <Link
-                    href="/profile"
-                    onClick={() => setMenuOpen(false)}
-                    className="btn btn-outline btn-sm flex-1"
-                  >
-                    আমার প্রোফাইল
-                  </Link>
+                  <ProfileLink mobile />
 
                   <button
                     onClick={handleSignOut}

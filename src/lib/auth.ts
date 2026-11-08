@@ -19,6 +19,7 @@ export const auth = betterAuth({
       enabled: true,
       trustedProviders: ["google"],
       requireLocalEmailVerified: false,
+        updateUserInfoOnLink: true,
     },
   },
 

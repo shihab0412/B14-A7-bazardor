@@ -12,6 +12,7 @@ export default function ProfilePage() {
 
   const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -64,12 +65,37 @@ export default function ProfilePage() {
     setMessage("নাম সফলভাবে পরিবর্তন হয়েছে!");
   };
 
+  const handleGoogleSync = async () => {
+    setMessage("");
+    setSyncing(true);
+
+    const { error } = await authClient.linkSocial({
+      provider: "google",
+      callbackURL: "/profile",
+    });
+
+    if (error) {
+      setMessage(error.message || "Google Profile Sync করা যায়নি");
+      setSyncing(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-base-200 px-4 py-12">
       <div className="mx-auto max-w-lg rounded-2xl bg-base-100 p-6 shadow-lg sm:p-8">
         <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 grid size-20 place-items-center rounded-full bg-green-700 text-3xl font-bold text-white">
-            {session.user.name?.charAt(0).toUpperCase() || "U"}
+          <div className="mx-auto mb-3 size-24 overflow-hidden rounded-full border-4 border-green-600 bg-green-100">
+            {session.user.image ? (
+              <img
+                src={session.user.image}
+                alt="Profile Picture"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-3xl font-bold text-green-700">
+                {session.user.name?.charAt(0).toUpperCase() || "U"}
+              </div>
+            )}
           </div>
 
           <h1 className="text-2xl font-extrabold">আমার প্রোফাইল</h1>
@@ -108,6 +134,15 @@ export default function ProfilePage() {
             {saving ? "আপডেট হচ্ছে..." : "নাম আপডেট করুন"}
           </button>
         </form>
+
+        <button
+          type="button"
+          onClick={handleGoogleSync}
+          disabled={syncing}
+          className="btn mt-3 w-full border border-green-700 bg-white text-green-800"
+        >
+          {syncing ? "Google-এর সঙ্গে Connect হচ্ছে..." : "Google Profile Picture Sync করুন"}
+        </button>
 
         {message && (
           <p className="mt-4 text-center text-sm font-medium">
