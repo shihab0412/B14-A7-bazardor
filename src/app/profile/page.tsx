@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,6 +8,7 @@ import { authClient } from "../lib/auth-client";
 export default function ProfilePage() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
+ 
 
   const [name, setName] = useState("");
   const [saving, setSaving] = useState(false);
@@ -89,7 +89,12 @@ export default function ProfilePage() {
               <img
                 src={session.user.image}
                 alt="Profile Picture"
-                className="h-full w-full object-cover"
+                referrerPolicy="no-referrer"
+                className="h-full w-full rounded-full object-cover"
+                onError={(e) => {
+                  console.log("Profile image failed to load");
+                  e.currentTarget.style.display = "none";
+                }}
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-3xl font-bold text-green-700">
@@ -141,13 +146,13 @@ export default function ProfilePage() {
           disabled={syncing}
           className="btn mt-3 w-full border border-green-700 bg-white text-green-800"
         >
-          {syncing ? "Google-এর সঙ্গে Connect হচ্ছে..." : "Google Profile Picture Sync করুন"}
+          {syncing
+            ? "Google-এর সঙ্গে Connect হচ্ছে..."
+            : "Google Profile Picture Sync করুন"}
         </button>
 
         {message && (
-          <p className="mt-4 text-center text-sm font-medium">
-            {message}
-          </p>
+          <p className="mt-4 text-center text-sm font-medium">{message}</p>
         )}
 
         <button
