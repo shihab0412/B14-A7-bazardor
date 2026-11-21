@@ -28,14 +28,20 @@ export default function SignInPage() {
       });
 
       if (error) {
-        setError(error.message || "Email অথবা Password ভুল হয়েছে।");
+        setError(error.message || "Login করতে সমস্যা হয়েছে। আবার চেষ্টা করো।");
         return;
       }
 
       router.push("/");
       router.refresh();
-    } catch {
-      setError("Login করতে সমস্যা হয়েছে। আবার চেষ্টা করো।");
+    } catch (err) {
+      console.error("Email Login Error:", err);
+
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Login করতে সমস্যা হয়েছে। আবার চেষ্টা করো।"
+      );
     } finally {
       setLoading(false);
     }
@@ -46,12 +52,27 @@ export default function SignInPage() {
     setGoogleLoading(true);
 
     try {
-      await authClient.signIn.social({
+      const result = await authClient.signIn.social({
         provider: "google",
         callbackURL: "/",
       });
-    } catch {
-      setError("Google Login করা যাচ্ছে না। আবার চেষ্টা করো।");
+
+      console.log("Google Login Result:", result);
+
+      if (result?.error) {
+        console.error("Google Login Error:", result.error);
+        setError(result.error.message || "Google Login Failed");
+        setGoogleLoading(false);
+      }
+    } catch (err) {
+      console.error("Google Login Exception:", err);
+
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unknown Google Login Error"
+      );
+
       setGoogleLoading(false);
     }
   };
